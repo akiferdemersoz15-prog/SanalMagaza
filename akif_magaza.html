@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akif Mağaza | Binlerce Ürün Kataloğu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --hb-orange: #ff6000;
+            --hb-blue: #0047ba;
+        }
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+        .orange-text { color: var(--hb-orange); }
+        .orange-bg { background-color: var(--hb-orange); }
+        .product-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+        .nav-link {
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 0;
+            background-color: var(--hb-orange);
+            transition: width 0.3s;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: var(--hb-orange);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Üst Duyuru Barı -->
+    <div class="bg-gray-800 text-white text-[11px] py-1">
+        <div class="container mx-auto px-4 flex justify-between uppercase tracking-wider">
+            <span>Redmi Note 9 Pro Kullanıcılarına Özel %10 İndirim Fırsatı!</span>
+            <div class="space-x-4">
+                <a href="#" class="hover:text-orange-400">Çözüm Merkezi</a>
+                <a href="#" class="hover:text-orange-400">Hayali Alan: 200 GB</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="showView('home')">
+                <div class="orange-bg text-white p-2 rounded-lg font-bold text-xl shadow-lg">AM</div>
+                <span class="text-2xl font-black orange-text">akif<span class="text-gray-800">mağaza</span></span>
+            </div>
+
+            <div class="flex-1 max-w-xl mx-8 relative">
+                <input type="text" id="main-search" oninput="handleSearch()" placeholder="Binlerce ürün arasında ara... (Örn: Redmi)" 
+                    class="w-full border-2 border-gray-100 rounded-full py-2.5 px-6 pr-12 focus:border-orange-500 outline-none transition-all shadow-sm">
+                <button class="absolute right-4 top-3 orange-text">
+                    <i class="fas fa-search text-lg"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-6 text-gray-600 font-semibold text-sm">
+                <div class="flex flex-col items-center cursor-pointer hover:orange-text relative" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart text-2xl"></i>
+                    <span>Sepetim</span>
+                    <span id="cart-count" class="absolute -top-1 -right-2 orange-bg text-white text-[10px] rounded-full px-2 py-0.5">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="bg-white border-t border-gray-100">
+            <div class="container mx-auto px-4 py-4 flex space-x-10 text-sm font-bold text-gray-600 overflow-x-auto whitespace-nowrap custom-scrollbar">
+                <span onclick="showView('home')" class="nav-link active" id="nav-home">ANA SAYFA</span>
+                <span onclick="showView('equipment')" class="nav-link" id="nav-equipment">İŞLEVSEL EKİPMANLAR</span>
+                <span onclick="filterByCategory('Elektronik')" class="nav-link" id="nav-elektronik">ELEKTRONİK</span>
+                <span onclick="filterByCategory('Moda')" class="nav-link" id="nav-moda">MODA</span>
+                <span onclick="filterByCategory('Ev Eşyaları')" class="nav-link" id="nav-ev">EV EŞYALARI</span>
+                <span onclick="filterByCategory('Flaş Katalog')" class="nav-link text-red-500" id="nav-fl"><i class="fas fa-bolt mr-1"></i>FLAŞ KATALOG</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 flex-1">
+        
+        <div id="view-home" class="page-view">
+            <!-- Poster Değiştirilmedi (Akif Farkı) -->
+            <section id="home-banner" class="mb-8 relative rounded-[40px] overflow-hidden shadow-2xl h-[350px]">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover" alt="Teknoloji">
+                <div class="absolute inset-0 bg-gradient-to-r from-orange-900/80 to-transparent flex items-center p-12">
+                    <div class="max-w-lg text-white">
+                        <h2 class="text-5xl font-black mb-4 leading-tight">TEKNOLOJİDE <br><span class="orange-text">AKİF</span> FARKI</h2>
+                        <p class="text-lg opacity-90 mb-6">Redmi Note 9 Pro kullanıcılarına özel aksesuarlar ve en yeni ekipmanlar burada.</p>
+                        <button class="bg-white text-orange-600 px-10 py-4 rounded-2xl font-black shadow-xl hover:scale-105 transition-all">HEMEN İNCELE</button>
+                    </div>
+                </div>
+            </section>
+
+            <div id="search-info" class="mb-6 hidden flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border-l-8 border-orange-500">
+                <h3 class="text-xl font-bold text-gray-700 italic">"<span id="search-query-text" class="orange-text underline"></span>" Kataloğu</h3>
+                <button onclick="resetSearch()" class="text-sm text-gray-400 hover:text-red-500 font-bold">Tüm Ürünlere Dön x</button>
+            </div>
+
+            <!-- Ürün Grid -->
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
+            
+            <div id="load-more" class="text-center py-10">
+                <p class="text-gray-400 font-bold italic">Akif Mağaza stokları yükleniyor...</p>
+            </div>
+        </div>
+
+        <div id="view-equipment" class="page-view hidden">
+             <div class="mb-10 text-center">
+                <h2 class="text-4xl font-black text-gray-800 uppercase italic">İşlevsel Ekipmanlar</h2>
+            </div>
+            <div id="equipment-grid" class="grid grid-cols-2 md:grid-cols-4 gap-8"></div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-xs text-gray-300 font-bold italic">© 2024 Akif Mağaza - 200 GB Hayali Alan Kapasitesi</p>
+        </div>
+    </footer>
+
+    <!-- Sepet Drawer -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 w-full md:w-[400px] bg-white shadow-2xl z-[60] transform translate-x-full transition-transform duration-500 flex flex-col">
+        <div class="p-8 border-b flex items-center justify-between">
+            <h2 class="text-3xl font-black italic">SEPETİM</h2>
+            <button onclick="toggleCart()" class="text-gray-300 hover:text-orange-500"><i class="fas fa-times text-2xl"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-8 space-y-4 custom-scrollbar"></div>
+        <div class="p-8 border-t bg-gray-50">
+            <div class="flex justify-between mb-6 font-black text-2xl">
+                <span>Toplam</span>
+                <span id="cart-total" class="orange-text">0 TL</span>
+            </div>
+            <button class="w-full orange-bg text-white py-5 rounded-3xl font-black text-xl shadow-lg">SİPARİŞİ TAMAMLA</button>
+        </div>
+    </div>
+    <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/40 z-[55] hidden"></div>
+
+    <script>
+        const allProducts = [];
+        
+        // Ürün Üretici (Binlerce ürün simülasyonu)
+        function generateData() {
+            // FLAŞ KATALOG
+            allProducts.push({ id: 'f1', name: "Redmi Note 9 Pro (AKİF ÖZEL)", price: 8499, rating: 5.0, reviews: 9999, image: "📱", category: "Flaş Katalog" });
+            allProducts.push({ id: 'f2', name: "Redmi Note 13 Ultra Pro", price: 18900, rating: 4.9, reviews: 1500, image: "📱", category: "Flaş Katalog" });
+
+            // ELEKTRONİK (Telefon & Tablet vb.)
+            const electronics = ["Akif Tab 10", "Redmi Pad Pro", "Ultra Akıllı Saat", "Kablosuz Kulaklık", "Gaming Laptop", "Akıllı Monitör", "Mekanik Klavye", "Pro Mouse"];
+            for(let i=0; i<350; i++) {
+                allProducts.push({
+                    id: 'e'+i,
+                    name: electronics[i % electronics.length] + " X-" + (i+1),
+                    price: 450 + (i * 12),
+                    rating: (Math.random() * 1 + 4).toFixed(1),
+                    reviews: Math.floor(Math.random() * 800),
+                    image: "🔌",
+                    category: "Elektronik"
+                });
+            }
+
+            // MODA (Kıyafetler & Aksesuar)
+            const fashion = ["Oversize Akif Hoodie", "Tekno Jean", "Sanal Gerçeklik Gömleği", "Kargo Pantolon", "Pro Sneaker", "Akif Spor Çantası"];
+            for(let i=0; i<350; i++) {
+                allProducts.push({
+                    id: 'm'+i,
+                    name: fashion[i % fashion.length] + " Edit " + (i+1),
+                    price: 250 + (i * 8),
+                    rating: (Math.random() * 1 + 4).toFixed(1),
+                    reviews: Math.floor(Math.random() * 400),
+                    image: "👕",
+                    category: "Moda"
+                });
+            }
+
+            // EV EŞYALARI (Katalog)
+            const home = ["Akıllı Espresso Makinesi", "HEPA Hava Temizleyici", "Robot Süpürge v4", "Akıllı Aydınlatma Kiti", "Hava Nemlendirici"];
+            for(let i=0; i<350; i++) {
+                allProducts.push({
+                    id: 'h'+i,
+                    name: home[i % home.length] + " Home " + (i+1),
+                    price: 180 + (i * 15),
+                    rating: (Math.random() * 1 + 4).toFixed(1),
+                    reviews: Math.floor(Math.random() * 250),
+                    image: "🏠",
+                    category: "Ev Eşyaları"
+                });
+            }
+
+            // İŞLEVSEL EKİPMANLAR
+            allProducts.push({ id: 'eq1', name: "Hassas Tornavida Seti", price: 280, rating: 4.9, reviews: 65, image: "🪛", category: "Ekipman", type: "equipment" });
+            allProducts.push({ id: 'eq2', name: "Lehimleme İstasyonu", price: 1850, rating: 4.7, reviews: 22, image: "🔌", category: "Ekipman", type: "equipment" });
+        }
+
+        generateData();
+
+        let cart = [];
+
+        window.showView = function(viewName) {
+            document.querySelectorAll('.page-view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            const nav = document.getElementById(`nav-${viewName}`);
+            if(nav) nav.classList.add('active');
+            
+            if(viewName === 'home') {
+                document.getElementById('home-banner').classList.remove('hidden');
+                document.getElementById('search-info').classList.add('hidden');
+                renderProducts(allProducts.filter(p => !p.type));
+            } else if(viewName === 'equipment') {
+                renderEquipment();
+            }
+            window.scrollTo(0,0);
+        }
+
+        window.filterByCategory = function(categoryName) {
+            showView('home');
+            document.getElementById('home-banner').classList.add('hidden');
+            document.getElementById('search-info').classList.remove('hidden');
+            document.getElementById('search-query-text').innerText = categoryName;
+
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const map = {'Elektronik': 'nav-elektronik', 'Moda': 'nav-moda', 'Ev Eşyaları': 'nav-ev', 'Flaş Katalog': 'nav-fl'};
+            if(map[categoryName]) document.getElementById(map[categoryName]).classList.add('active');
+
+            const filtered = allProducts.filter(p => p.category === categoryName);
+            renderProducts(filtered);
+        }
+
+        function renderProducts(list) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = list.map(p => `
+                <div class="bg-white rounded-[30px] p-5 product-card transition-all flex flex-col h-full border border-gray-100 shadow-sm">
+                    <div class="h-40 bg-gray-50 rounded-[25px] flex items-center justify-center text-5xl mb-4">${p.image}</div>
+                    <div class="flex-1">
+                        <span class="text-[9px] text-orange-500 font-black uppercase tracking-tighter">${p.category}</span>
+                        <h4 class="text-sm font-bold text-gray-800 line-clamp-2 italic leading-tight">${p.name}</h4>
+                        <div class="text-lg font-black orange-text mt-2">${p.price.toLocaleString('tr-TR')} TL</div>
+                    </div>
+                    <button onclick="addToCart('${p.id}')" class="mt-4 w-full bg-gray-100 orange-text py-3 rounded-xl font-bold text-xs hover:orange-bg hover:text-white transition-all">
+                        SEPETE EKLE
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderEquipment() {
+            const grid = document.getElementById('equipment-grid');
+            const eqList = allProducts.filter(p => p.type === 'equipment');
+            grid.innerHTML = eqList.map(p => `
+                <div class="bg-white rounded-[30px] p-6 product-card border border-gray-100">
+                    <div class="h-40 bg-gray-50 rounded-[25px] flex items-center justify-center text-5xl mb-4">${p.image}</div>
+                    <h4 class="font-bold text-gray-800 mb-2 italic">${p.name}</h4>
+                    <div class="text-lg font-black orange-text">${p.price} TL</div>
+                    <button onclick="addToCart('${p.id}')" class="mt-4 w-full orange-bg text-white py-3 rounded-xl font-bold">EKLE</button>
+                </div>
+            `).join('');
+        }
+
+        window.handleSearch = function() {
+            const query = document.getElementById('main-search').value.toLowerCase();
+            if(!query) { renderProducts(allProducts.filter(p => !p.type)); return; }
+            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        window.resetSearch = () => {
+            document.getElementById('main-search').value = "";
+            showView('home');
+        }
+
+        window.addToCart = function(id) {
+            const p = allProducts.find(item => item.id === id);
+            cart.push(p);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const container = document.getElementById('cart-items');
+            container.innerHTML = cart.map((item, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-2xl">
+                    <span class="text-2xl">${item.image}</span>
+                    <span class="text-xs font-bold flex-1 px-3">${item.name}</span>
+                    <span class="orange-text font-black text-xs">${item.price} TL</span>
+                </div>
+            `).join('');
+            const total = cart.reduce((s, i) => s + i.price, 0);
+            document.getElementById('cart-total').innerText = total.toLocaleString('tr-TR') + " TL";
+        }
+
+        window.toggleCart = () => {
+            document.getElementById('cart-drawer').classList.toggle('translate-x-full');
+            document.getElementById('overlay').classList.toggle('hidden');
+        }
+
+        window.onload = () => showView('home');
+    </script>
+</body>
+</html>
